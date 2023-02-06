@@ -36,8 +36,10 @@ Future<List<String>> decodeResponse(String response) async {
 
     try {
       final decodedRoute = polylineDecoder.decode(encodedRoute);
-      final gpxString =
-          gpxCreator.generateGpxString(decodedRoute, i.toString());
+      final gpxString = gpxCreator.generateGpxString(
+        decodedRoute,
+        _genFileName(DateTime.now(), i),
+      );
 
       decodedRoutes.add(gpxString);
     } catch (_) {}
@@ -48,4 +50,8 @@ Future<List<String>> decodeResponse(String response) async {
   } else {
     return decodedRoutes;
   }
+}
+
+String _genFileName(DateTime now, int i) {
+  return '${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}_$i.gpx';
 }
