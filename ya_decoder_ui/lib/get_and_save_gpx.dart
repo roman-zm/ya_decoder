@@ -10,17 +10,24 @@ Future getGpx(String url) async {
     dialogTitle: 'Куда сохранить',
     lockParentWindow: true,
   );
-  final now = DateTime.now().toIso8601String();
+  final now = DateTime.now();
 
   if (dirPath != null) {
     for (var i = 0; i < gpxStrings.length; i++) {
       try {
         final separator = Platform.pathSeparator;
-        final fileName = '${now}_$i.gpx';
-        await File('$dirPath$separator$fileName').writeAsString(gpxStrings[i]);
+        final fileName = _genFileName(now, i);
+        final filePath = '$dirPath$separator$fileName';
+        final file = File(filePath);
+        await file.create();
+        await file.writeAsString(gpxStrings[i]);
       } catch (e) {
         throw YaDecoderError('Ошибка при сохранении файлов: $e');
       }
     }
   }
+}
+
+String _genFileName(DateTime now, int i) {
+  return '${now.year}_${now.month}_${now.day}_${now.hour}_${now.minute}_$i.gpx';
 }
