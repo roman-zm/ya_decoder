@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:ya_decoder_ui/browser_get.dart';
 import 'package:ya_route_decoder/ya_route_decoder.dart';
 
-Future getGpx(String url) async {
-  final gpxStrings = await decode(url);
+Future getGpx(String url, bool openPageInBrowser) async {
+  final gpxStrings = await _getAndDecode(url, openPageInBrowser);
 
   final dirPath = await FilePicker.platform.getDirectoryPath(
     dialogTitle: 'Куда сохранить',
@@ -25,6 +26,22 @@ Future getGpx(String url) async {
         throw YaDecoderError('Ошибка при сохранении файлов: $e');
       }
     }
+  }
+}
+
+Future<List<String>> _getAndDecode(String url, bool openPageInBrowser) async {
+  if (openPageInBrowser) {
+    try {
+      final response = await BrowserFetcher().fetch(url);
+      return await decodeResponse(response);
+    } on YaDecoderError catch (_) {
+      rethrow;
+    } catch (e, s) {
+      print(s);
+      throw YaDecoderError('Ошибка открытия бразуера: $e');
+    }
+  } else {
+    return await decode(url);
   }
 }
 

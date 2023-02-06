@@ -15,6 +15,10 @@ Future<List<String>> decode(String url) async {
     throw YaDecoderError('Ошибка запроса страницы');
   }
 
+  return await decodeResponse(response);
+}
+
+Future<List<String>> decodeResponse(String response) async {
   final List<String> encodedRoutes;
   try {
     encodedRoutes = EncodedRouteExtractor().extract(response);

@@ -16,6 +16,7 @@ class UrlInputPageState extends State<UrlInputPage> {
   final _formKey = GlobalKey<FormState>();
   final controller = TextEditingController();
   bool showClearButton = false;
+  bool openInBrowser = false;
 
   @override
   void initState() {
@@ -66,13 +67,23 @@ class UrlInputPageState extends State<UrlInputPage> {
                 return null;
               },
             ),
+            CheckboxListTile(
+              title: const Text('Открыть в браузере'),
+              value: openInBrowser,
+              tristate: false,
+              onChanged: (value) {
+                setState(() {
+                  openInBrowser = value == true;
+                });
+              },
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ProgressButton(
                 onPressed: () async {
                   if (_formKey.currentState?.validate() == true) {
                     try {
-                      await getGpx(controller.text);
+                      await getGpx(controller.text, openInBrowser);
                     } on YaDecoderError catch (e) {
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(content: Text(e.message)));
