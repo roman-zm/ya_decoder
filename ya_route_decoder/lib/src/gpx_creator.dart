@@ -3,7 +3,7 @@ import 'package:gpx/gpx.dart';
 class GpxCreator {
   const GpxCreator();
 
-  String generateGpxString(List<List<double>> locations) {
+  String generateGpxString(List<List<double>> locations, String name) {
     final gpx = Gpx();
 
     final Trkseg trackSegment = Trkseg(
@@ -11,7 +11,10 @@ class GpxCreator {
     );
 
     gpx.trks = [
-      Trk(trksegs: [trackSegment]),
+      Trk(
+        name: name,
+        trksegs: [trackSegment],
+      ),
     ];
 
     return GpxWriter().asString(gpx, pretty: true);

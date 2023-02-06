@@ -11,24 +11,34 @@ class BrowserFetcher {
     try {
       final page = await browser.newPage();
 
+      final urlParams = _extractUrlParams(url);
       page.onResponse.listen((event) async {
-        if (event.url == url) {
+        if (event.url.contains(urlParams)) {
           try {
             final content = await event.content;
-            print(content);
             browser.close();
             completer.complete(content.toString());
           } catch (e) {
-            // TODO
+            print(e);
           }
         }
       });
       page.goto(url);
+      page.onClose.then((value) {
+        browser.close();
+        completer.complete();
+        throw YaDecoderError('Браузер закрыт');
+      });
     } catch (e) {
       await browser.close();
       throw YaDecoderError('Ошибка при работе с бразуером');
     }
 
     return await completer.future;
+  }
+
+  String _extractUrlParams(String url) {
+    final index = url.indexOf('?');
+    return url.substring(index);
   }
 }

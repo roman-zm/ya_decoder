@@ -36,7 +36,8 @@ Future<List<String>> decodeResponse(String response) async {
 
     try {
       final decodedRoute = polylineDecoder.decode(encodedRoute);
-      final gpxString = gpxCreator.generateGpxString(decodedRoute);
+      final gpxString =
+          gpxCreator.generateGpxString(decodedRoute, i.toString());
 
       decodedRoutes.add(gpxString);
     } catch (_) {}
